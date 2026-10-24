@@ -46,7 +46,7 @@ const MS_POR_DIA = 86_400_000;
 export function diasEntre(desde: Date, hasta: Date): number {
   const ms = hasta.getTime() - desde.getTime();
   if (ms <= 0) return 0;
-  return Math.floor(ms / MS_POR_DIA) + 1;
+  return Math.floor(ms / MS_POR_DIA); // Error: Estaba sumando 1 día, pero la resta de ms ya daba el resultado correcto. Lo delató diasEntre por la diferencia de 31 vs lo esperado 30.
 }
 
 /**
