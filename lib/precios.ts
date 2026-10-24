@@ -75,7 +75,7 @@ export function aplicarCupon(subtotal: number, cupon: Cupon, ahora: Date): numbe
   const descuento =
     cupon.topeCentavos !== undefined ? Math.min(bruto, cupon.topeCentavos) : bruto;
 
-  return subtotal - descuento;
+  return Math.max(0, subtotal - descuento); //Error 2, el descuento siempre se aplicaba sin validar que no diera resultado negativo. Lo delató la prueba de cupones donde se recibe el -3000 en lugar de 0
 }
 
 /**
