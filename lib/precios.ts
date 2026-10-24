@@ -85,11 +85,13 @@ export function aplicarCupon(subtotal: number, cupon: Cupon, ahora: Date): numbe
  * se calcula sobre lo que de verdad se cobra.
  */
 export function calcularTotal(subtotal: number, cupon: Cupon | null, ahora: Date): Desglose {
-  const iva = Math.round(subtotal * IVA);
-  const conIva = subtotal + iva;
-  const total = cupon ? aplicarCupon(conIva, cupon, ahora) : conIva;
+  const descuento = cupon ? subtotal - aplicarCupon(subtotal, cupon, ahora) : 0;
+  const subtotalConDescuento = subtotal - descuento;
+  const iva = Math.round(subtotalConDescuento * IVA);
+  const conIva = subtotalConDescuento + iva;
+  const total = Math.max(0, conIva); //Error 3, el total no puede ser negativo y el orden del cálculo del IVA estaba mal, primero es el descuento y luego el IVA. Lo delató la prueba de caltularTotal con cupón.
 
-  return { subtotal, descuento: conIva - total, iva, total };
+  return { subtotal, descuento, iva, total };
 }
 
 /** Q75.00 a partir de 7500. Solo para mostrar. */
