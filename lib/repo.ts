@@ -23,9 +23,9 @@ export async function suscripcionesActivas(equipo: string): Promise<Suscripcion[
   const filas = await sql<Suscripcion[]>`
     SELECT id, equipo, plan, estado
       FROM suscripciones
-     WHERE equipo = ${equipo}
+     WHERE equipo = ${equipo} AND estado = 'activa'
      ORDER BY id
-  `;
+  `;//Error 1, no hacía filtrado para detectar solo las activas.
   return filas;
 }
 

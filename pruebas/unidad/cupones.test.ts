@@ -42,11 +42,11 @@ describe('validarCupon', () => {
       const r = validarCupon('US-2026', CATALOGO, AHORA);
       expect(r).toEqual({ ok: false, razon: 'formato' });
     });
-      it('rechaza un código con más de cuatro dígitos', () => {
-    const r = validarCupon('USP-20261', CATALOGO, AHORA);
+    it('rechaza un código con más de cuatro dígitos', () => {
+      const r = validarCupon('USP-20261', CATALOGO, AHORA);
 
-    expect(r).toEqual({ ok: false, razon: 'formato' });
-  });
+      expect(r).toEqual({ ok: false, razon: 'formato' });
+    });
   });
 
   //it.todo('rechaza un código que no está en el catálogo');
@@ -78,7 +78,7 @@ describe('validarCupon', () => {
   //it.todo('rechaza un cupón que ya llegó a su límite de usos');
   describe('validarCupon', () => {
     it('rechaza un código que superó el límite de usos', () => {
-      const catalogo = [guardado({ usos:100, limiteUsos: 100 })];
+      const catalogo = [guardado({ usos: 100, limiteUsos: 100 })];
       const r = validarCupon('USP-2026', catalogo, AHORA);
       expect(r).toEqual({ ok: false, razon: 'agotado' });
     });
@@ -90,10 +90,10 @@ describe('validarCupon', () => {
       const r = validarCupon('usp-2026', CATALOGO, AHORA);
       expect(r.ok).toBe(true);
     });
-      it('acepta un código con espacios al inicio y al final', () => {
-    const r = validarCupon('  USP-2026  ', CATALOGO, AHORA);
+    it('acepta un código con espacios al inicio y al final', () => {
+      const r = validarCupon('  USP-2026  ', CATALOGO, AHORA);
 
-    expect(r.ok).toBe(true);
-  });
+      expect(r.ok).toBe(true);
+    });
   });
 });
