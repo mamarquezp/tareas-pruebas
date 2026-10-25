@@ -23,9 +23,9 @@ export async function suscripcionesActivas(equipo: string): Promise<Suscripcion[
   const filas = await sql<Suscripcion[]>`
     SELECT id, equipo, plan, estado
       FROM suscripciones
-     WHERE equipo = ${equipo}
+     WHERE equipo = ${equipo} AND estado = 'activa'
      ORDER BY id
-  `;
+  `;//Error 1, no hacía filtrado para detectar solo las activas.
   return filas;
 }
 
@@ -38,16 +38,17 @@ export async function suscripcionesActivas(equipo: string): Promise<Suscripcion[
  */
 export async function canjearCupon(codigo: string, equipo: string): Promise<boolean> {
   const filas = await sql<{ usos: number; limite_usos: number }[]>`
-    SELECT usos, limite_usos FROM cupones WHERE codigo = ${codigo}
+   UPDATE cupones
+      SET usos = usos + 1
+    WHERE codigo = ${codigo} AND usos < limite_usos
+    RETURNING usos
   `;
-  const cupon = filas[0];
-  if (!cupon) return false;
-  if (cupon.usos >= cupon.limite_usos) return false;
+  if (filas.length === 0) return false;
 
-  await sql`UPDATE cupones SET usos = usos + 1 WHERE codigo = ${codigo}`;
   await sql`INSERT INTO canjes (codigo, equipo) VALUES (${codigo}, ${equipo})`;
   return true;
-}
+}// Error 2, se cambió la lógica para hacer un update con evaluación de límite en la misma transacción y validación posterior para el insert.
+
 
 /** Cuántas veces se ha canjeado un cupón, según la tabla de canjes. */
 export async function canjesDe(codigo: string): Promise<number> {
