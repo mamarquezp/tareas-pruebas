@@ -43,7 +43,7 @@ export async function canjearCupon(codigo: string, equipo: string): Promise<bool
     WHERE codigo = ${codigo} AND usos < limite_usos
     RETURNING usos
   `;
-if (filas.length === 0) return false;
+  if (filas.length === 0) return false;
 
   await sql`INSERT INTO canjes (codigo, equipo) VALUES (${codigo}, ${equipo})`;
   return true;

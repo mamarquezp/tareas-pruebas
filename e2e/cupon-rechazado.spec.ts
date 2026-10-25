@@ -18,17 +18,34 @@ import { test, expect } from '@playwright/test';
 // ya reintenta solo hasta que aparece.
 // ─────────────────────────────────────────────────────────────────────────────
 
-test.fixme('avisa que el cupón venció y no descuenta nada', async ({ page }) => {
+test('avisa que el cupón venció y no descuenta nada', async ({ page }) => {
   await page.goto('/checkout');
-  // …
+
+  await page.getByLabel('Plan').selectOption('taller');
+  await page.getByLabel('Cupón').fill('USP-1999');
+  await page.getByRole('button', { name: 'Calcular' }).click();
+
+  await expect(page.getByText('Ese cupón ya venció')).toBeVisible();
+  await expect(page.getByTestId('total')).toHaveText('Q268.80');
+
 });
 
-test.fixme('avisa que el cupón ya se agotó y no descuenta nada', async ({ page }) => {
+test('avisa que el cupón ya se agotó y no descuenta nada', async ({ page }) => {
   await page.goto('/checkout');
-  // …
+  await page.getByLabel('Plan').selectOption('taller');
+  await page.getByLabel('Cupón').fill('USP-0404');
+  await page.getByRole('button', { name: 'Calcular' }).click();
+
+  await expect(page.getByText('Ese cupón ya se usó todas las veces que podía usarse.')).toBeVisible();
+  await expect(page.getByTestId('total')).toHaveText('Q268.80');
 });
 
-test.fixme('avisa que el código no tiene forma de cupón', async ({ page }) => {
+test('avisa que el código no tiene forma de cupón', async ({ page }) => {
   await page.goto('/checkout');
-  // …
+  await page.getByLabel('Plan').selectOption('taller');
+  await page.getByLabel('Cupón').fill('USP-26');
+  await page.getByRole('button', { name: 'Calcular' }).click();
+
+  await expect(page.getByText('Ese código no tiene la forma de un cupón (AAA-0000)')).toBeVisible();
+  await expect(page.getByTestId('total')).toHaveText('Q268.80');
 });
